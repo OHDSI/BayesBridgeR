@@ -12,11 +12,7 @@ get_os <- function() {
   return(os)
 }
 
-set_reticulate_python_path <- function(python_path = NULL) {
-  if (!is.null(python_path)) {
-    reticulate::use_python(python_path, required = TRUE)
-    return()
-  }
+guess_python_path <- function() {
   os <- get_os()
   if (os == 'windows') {
     home <- Sys.getenv("homepath")
@@ -29,13 +25,8 @@ set_reticulate_python_path <- function(python_path = NULL) {
     bin <- 'bin/python'
     python_path <- paste(home, anaconda, bin, sep="/")
   } else {
-    python_path <- 'unknownOS'
+    python_path <- NULL
+    warning('Unknown OS, cannot guess a default python path.')
   }
-  tryCatch(
-    reticulate::use_python(python_path, required = TRUE),
-    error = function(c) {
-      stop("Python binary not found in a default path. Manually specify the path.")
-    }
-  )
   return(python_path)
 }

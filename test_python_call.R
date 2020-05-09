@@ -1,6 +1,7 @@
 library(Matrix)
 library(reticulate)
-python_path <- set_reticulate_python_path()
+python_path <- BayesBridgeR::guess_python_path()
+reticulate::use_python(python_path, required = TRUE)
 
 # Simulate sparse binary design matrix and binomial outcome
 set.seed(0)
