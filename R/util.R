@@ -17,7 +17,7 @@ guess_python_path <- function() {
   if (os == 'windows') {
     home <- Sys.getenv("homepath")
     anaconda <- "AppData\\Local\\Continuum\\anaconda3"
-    bin <- "bin\\python.exe"
+    bin <- "python.exe"
     python_path <- paste(home, anaconda, bin, sep="\\")
   } else if (os %in% c("mac", "unix")) {
     home <- path.expand("~")
