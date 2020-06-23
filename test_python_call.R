@@ -26,37 +26,41 @@ n_success <- rbinom(n_obs, n_trial, prob = 1 / (1 + exp(-X_beta)))
 
 # Generate posterior samples via Python 'bayesbridge' package
 X_py <- reticulate::r_to_py(X)
-outcome <- list(
+outcome <- reticulate::tuple(
   reticulate::np_array(n_success),
   reticulate::np_array(n_trial)
 )
 bayesbridge <- reticulate::import('bayesbridge')
-bb <- bayesbridge$BayesBridge(
-  outcome, X,
-  model = 'logit',
-  regularizing_slab_size = 1.,
+model <- bayesbridge$RegressionModel(
+  outcome, X_py,
+  family = 'logit',
   center_predictor = TRUE
 )
+prior <- bayesbridge$RegressionCoefPrior(
+  bridge_exponent=.25,
+  regularizing_slab_size = 1.
+)
+bb <- bayesbridge$BayesBridge(model, prior)
 n_burnin <- 0L
 n_post_burnin <- 1100L
-mcmc_output <- bb$gibbs(n_burnin, n_post_burnin, thin=1, bridge_exponent=.25)
+mcmc_output <- bb$gibbs(n_burnin, n_post_burnin, thin=1)
 mcmc_samples <- mcmc_output$samples
 
 
 # Diagnose convergence and discard the non-stationary part.
 plot(mcmc_samples$logp, type = 'l', xlab = 'MCMC iter', ylab = 'Log density')
 n_burnin <- 100 # via visual diagnostic (to be automated)
-beta_samples <- mcmc_samples$beta
-beta_samples <- beta_samples[-1, ] # Exclude the intercept
-beta_samples <- beta_samples[, -seq(1, n_burnin)]
+coef_samples <- mcmc_samples$coef
+coef_samples <- coef_samples[-1, ] # Exclude the intercept
+coef_samples <- coef_samples[, -seq(1, n_burnin)]
 
 
 # Visually summarize the posterior.
 n_coef_to_plot <- 25
 
-post_mean <- rowMeans(beta_samples)
-lower_quantile <- apply(beta_samples, 1, quantile, prob = .025)
-upper_quantile <- apply(beta_samples, 1, quantile, prob = .975)
+post_mean <- rowMeans(coef_samples)
+lower_quantile <- apply(coef_samples, 1, quantile, prob = .025)
+upper_quantile <- apply(coef_samples, 1, quantile, prob = .975)
 y_min <- min(lower_quantile[1:n_coef_to_plot])
 y_max <- max(upper_quantile[1:n_coef_to_plot])
 plot(post_mean[1:n_coef_to_plot], pch=4, col='blue', ylim = c(y_min, y_max),
