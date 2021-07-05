@@ -30,3 +30,43 @@ guess_python_path <- function() {
   }
   return(python_path)
 }
+
+#' Set up a virtual environment to install the required Python packages.
+#'
+#' @export
+setup_python_env <- function(
+    envname='bayesbridge', python_path=NULL, use_existing=FALSE, ignore_installed=FALSE
+  ) {
+  py_environments <- reticulate::virtualenv_list()
+  if (reticulate::virtualenv_exists(envname) && !use_existing) {
+    stop(paste(
+      sprintf("Virtual environment %s already exists.", envname),
+      "Choose an alternative environment or set 'use_existing' to TRUE."
+    ))
+  }
+  invisible(capture.output(
+    path_to_env <- reticulate::virtualenv_create(envname=envname, python=python_path)
+      # Simply returns the path if environment already exists
+  ))
+  packages <- c('bayesbridge==0.2.1')
+  message("Installing bayesbridge and its dependencies to the environment.")
+  reticulate::virtualenv_install(
+    envname=envname, packages = packages, ignore_installed = ignore_installed
+  )
+  return(path_to_env)
+}
+
+#' Use the virtual environment created using setup_python_env()
+#'
+#' @export
+configure_python <- function(envname='bayesbridge') {
+  if (!reticulate::virtualenv_exists(envname)) {
+    stop(paste0(
+      "Environment '", envname, "' does not exist. ",
+      "Set it up via 'setup_python_env().'"
+    ))
+  }
+  python_path <- reticulate::use_virtualenv(envname, required = TRUE)
+  reticulate::use_python(python_path, required = TRUE)
+  invisible(python_path)
+}
