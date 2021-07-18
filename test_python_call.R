@@ -1,7 +1,9 @@
 library(Matrix)
 library(reticulate)
-python_path <- BayesBridgeR::guess_python_path()
-reticulate::use_python(python_path, required = TRUE)
+
+python_path <- reticulate::py_discover_config()$python
+setup_python_env(python_path=python_path)
+configure_python()
 
 # Simulate sparse binary design matrix and binomial outcome
 set.seed(0)
@@ -68,3 +70,4 @@ plot(post_mean[1:n_coef_to_plot], pch=4, col='blue', ylim = c(y_min, y_max),
 points(lower_quantile[1:n_coef_to_plot], pch=sprintf("\u2013"), col='green')
 points(upper_quantile[1:n_coef_to_plot], pch=sprintf("\u2013"), col='green')
 lines(beta_true[1:n_coef_to_plot], col='red', lty='dashed')
+
