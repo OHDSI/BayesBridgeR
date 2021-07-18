@@ -12,7 +12,7 @@ get_os <- function() {
   return(os)
 }
 
-guess_python_path <- function() {
+guess_anaconda_path <- function() {
   os <- get_os()
   if (os == 'windows') {
     home <- Sys.getenv("homepath")
@@ -26,7 +26,7 @@ guess_python_path <- function() {
     python_path <- paste(home, anaconda, bin, sep="/")
   } else {
     python_path <- NULL
-    warning('Unknown OS, cannot guess a default python path.')
+    warning('Unknown OS, cannot guess a default Anaconda Python path.')
   }
   return(python_path)
 }
