@@ -45,7 +45,7 @@ prior <- bayesbridge$RegressionCoefPrior(
 bb <- bayesbridge$BayesBridge(model, prior)
 n_burnin <- 0L
 n_post_burnin <- 1100L
-mcmc_output <- bb$gibbs(n_burnin, n_post_burnin, thin=1)
+mcmc_output <- bb$gibbs(n_burnin, n_post_burnin, thin=1, n_status_update = 10)
 mcmc_samples <- mcmc_output$samples
 
 
