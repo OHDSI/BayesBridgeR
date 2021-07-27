@@ -2,6 +2,7 @@
 #'
 #' @export
 create_model <- function(outcome, design_mat, family = 'logit', center_pred = TRUE) {
+  # Validate input arguments
   if (family == 'logit') {
     if (is.list(outcome) && length(outcome) == 2)  {
       if ("n_success" %in% names(outcome) && "n_trial" %in% names(outcome)) {
@@ -25,6 +26,19 @@ create_model <- function(outcome, design_mat, family = 'logit', center_pred = TR
       "Check https://bayes-bridge.readthedocs.io/."
     ))
   }
+  # Initialize BayesBridge's RegressionModel
+  outcome_py <- reticulate::tuple(
+    reticulate::np_array(n_success),
+    reticulate::np_array(n_trial)
+  )
+  design_mat_py <- reticulate::r_to_py(design_mat)
+  bayesbridge <- reticulate::import('bayesbridge')
+  model <- bayesbridge$RegressionModel(
+    outcome_py, design_mat_py,
+    family = family,
+    center_predictor = TRUE
+  )
+  return(model)
 }
 
 check_logit_outcome_arg <- function(n_success, n_trial=NULL) {
@@ -39,7 +53,7 @@ check_logit_outcome_arg <- function(n_success, n_trial=NULL) {
     )
   } else {
     stopifnot(
-      "Number of trials must be a numeric vector" =
+      "Number of trials must be an integer-valued numeric vector" =
       is_numeric_vector(n_trial) && is_integer_valued(n_trial)
     )
     stopifnot(
