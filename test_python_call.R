@@ -2,8 +2,8 @@ library(Matrix)
 library(reticulate)
 
 python_path <- reticulate::py_discover_config()$python
-setup_python_env(python_path=python_path)
-configure_python()
+bayesbridger::setup_python_env(python_path=python_path)
+bayesbridger::configure_python()
 
 # Simulate sparse binary design matrix and binomial outcome
 set.seed(0)
@@ -24,20 +24,11 @@ beta_true <- c(rep(1., n_signal), rep(0., n_pred - n_signal))
 X_beta <- as.vector(X %*% beta_true)
 n_trial <- rep(1, n_obs)
 n_success <- rbinom(n_obs, n_trial, prob = 1 / (1 + exp(-X_beta)))
-
+outcome <- list(n_success = n_success, n_trial = n_trial)
 
 # Generate posterior samples via Python 'bayesbridge' package
-X_py <- reticulate::r_to_py(X)
-outcome <- reticulate::tuple(
-  reticulate::np_array(n_success),
-  reticulate::np_array(n_trial)
-)
-bayesbridge <- reticulate::import('bayesbridge')
-model <- bayesbridge$RegressionModel(
-  outcome, X_py,
-  family = 'logit',
-  center_predictor = TRUE
-)
+bayesbridge <- reticulate::import("bayesbridge")
+model <- bayesbridger::create_model(outcome, X)
 prior <- bayesbridge$RegressionCoefPrior(
   bridge_exponent=.25,
   regularizing_slab_size = 1.
