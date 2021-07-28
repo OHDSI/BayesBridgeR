@@ -32,7 +32,6 @@ create_model <- function(outcome, design_mat, family = 'logit', center_pred = TR
     reticulate::np_array(n_trial)
   )
   design_mat_py <- reticulate::r_to_py(design_mat)
-  bayesbridge <- reticulate::import('bayesbridge')
   model <- bayesbridge$RegressionModel(
     outcome_py, design_mat_py,
     family = family,
