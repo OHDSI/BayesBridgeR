@@ -73,8 +73,22 @@ is_integer_valued <- function(v) {
 #' Create prior for BayesBridge
 #'
 #' @export
-create_prior <- function() {
-
+create_prior <- function(bridge_exponent = 0.25,
+    regularizing_slab_size = 1,
+    n_fixed_effect = 0L,
+    sd_for_fixed_effect = Inf,
+    sd_for_intercept = Inf,
+    global_scale_prior_hyper_param = NULL
+  ) {
+  prior = bayesbridge$RegressionCoefPrior(
+    bridge_exponent = bridge_exponent,
+    regularizing_slab_size = regularizing_slab_size,
+    n_fixed_effect = as.integer(n_fixed_effect),
+    sd_for_fixed_effect = sd_for_fixed_effect,
+    sd_for_intercept = sd_for_intercept,
+    global_scale_prior_hyper_param = global_scale_prior_hyper_param
+  )
+  return(prior)
 }
 
 construct_bayesbridge <- function() {

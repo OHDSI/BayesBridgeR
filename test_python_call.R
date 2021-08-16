@@ -29,7 +29,7 @@ outcome <- list(n_success = n_success, n_trial = n_trial)
 # Generate posterior samples via Python 'bayesbridge' package
 bayesbridge <- reticulate::import("bayesbridge")
 model <- bayesbridger::create_model(outcome, X)
-prior <- bayesbridge$RegressionCoefPrior(
+prior <- bayesbridger::create_prior(
   bridge_exponent=.25,
   regularizing_slab_size = 1.
 )
