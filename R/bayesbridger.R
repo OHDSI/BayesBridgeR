@@ -91,6 +91,9 @@ create_prior <- function(bridge_exponent = 0.25,
   return(prior)
 }
 
-construct_bayesbridge <- function() {
-
+#' Instantiate the BayesBridge object for Gibbs sampling
+#'
+#' @export
+instantiate_bayesbridge <- function(model, prior) {
+  return(bayesbridge$BayesBridge(model, prior))
 }

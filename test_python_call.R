@@ -33,7 +33,7 @@ prior <- bayesbridger::create_prior(
   bridge_exponent=.25,
   regularizing_slab_size = 1.
 )
-bb <- bayesbridge$BayesBridge(model, prior)
+bb <- bayesbridger::instantiate_bayesbridge(model, prior)
 n_burnin <- 0L
 n_post_burnin <- 1100L
 mcmc_output <- bb$gibbs(n_burnin, n_post_burnin, thin=1, n_status_update = 10)
