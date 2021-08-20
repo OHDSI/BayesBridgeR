@@ -18,7 +18,7 @@ col_index <- unlist(
   lapply(1:n_pred, function (i) sample.int(n_obs, size = nnz_per_col, replace = FALSE))
 )
 val <- rep(1., nnz_per_col * n_pred)
-X <- sparseMatrix(i = col_index, j = row_index, x = val)
+X <- sparseMatrix(i = col_index, j = row_index, x = val, repr = "R")
 
 beta_true <- c(rep(1., n_signal), rep(0., n_pred - n_signal))
 X_beta <- as.vector(X %*% beta_true)
