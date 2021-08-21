@@ -35,7 +35,8 @@ guess_anaconda_path <- function() {
 #'
 #' @export
 setup_python_env <- function(
-    envname='bayesbridge', python_path=NULL, use_existing=FALSE, ignore_installed=FALSE
+    envname='bayesbridge', bayesbridge_ver='==0.2.1',
+    python_path=NULL, use_existing=FALSE, ignore_installed=FALSE
   ) {
   py_environments <- reticulate::virtualenv_list()
   if (reticulate::virtualenv_exists(envname) && !use_existing) {
@@ -48,7 +49,7 @@ setup_python_env <- function(
     path_to_env <- reticulate::virtualenv_create(envname=envname, python=python_path)
       # Simply returns the path if environment already exists
   ))
-  packages <- c('bayesbridge==0.2.1')
+  packages <- c(paste0('bayesbridge', bayesbridge_ver))
   message("Installing bayesbridge and its dependencies to the environment.")
   reticulate::virtualenv_install(
     envname=envname, packages = packages, ignore_installed = ignore_installed
