@@ -13,22 +13,32 @@ get_os <- function() {
 }
 
 guess_anaconda_path <- function() {
+  # Based on https://docs.anaconda.com/anaconda/user-guide/faq/#installing-anaconda
+  # (as retrieved on Aug 2021) and on other resources.
   os <- get_os()
   if (os == 'windows') {
     home <- Sys.getenv("homepath")
-    anaconda <- "AppData\\Local\\Continuum\\anaconda3"
     bin <- "python.exe"
-    python_path <- paste(home, anaconda, bin, sep="\\")
+    anaconda_loc <- c("Anaconda3", "AppData\\Local\\Continuum\\anaconda3")
+    python_path_candidate <- sapply(
+      anaconda_loc, function (anaconda) paste(home, anaconda, bin, sep="\\")
+    )
   } else if (os %in% c("mac", "unix")) {
     home <- path.expand("~")
-    anaconda <- "anaconda3"
     bin <- 'bin/python'
-    python_path <- paste(home, anaconda, bin, sep="/")
+    anaconda_loc <- c("anaconda3", "opt/anaconda3")
+    python_path_candidate <- sapply(
+      anaconda_loc, function (anaconda) paste(home, anaconda, bin, sep="/")
+    )
   } else {
-    python_path <- NULL
+    python_path_candidate <- NULL
     warning('Unknown OS, cannot guess a default Anaconda Python path.')
   }
-  return(python_path)
+  for (python_path in python_path_candidate) {
+    if (file.exists(python_path)) return(python_path)
+  }
+  warning("Anaconda not found in common locations. Returning the searched paths.")
+  return(python_path_candidate)
 }
 
 #' Set up a virtual environment to install the required Python packages.
