@@ -62,7 +62,7 @@ setup_python_env <- function(
   packages <- c(paste0('bayesbridge', bayesbridge_ver))
   message("Installing bayesbridge and its dependencies to the environment.")
   pip_options <- ifelse(
-    use_test_pypi, '--index-url https://test.pypi.org/simple/ --no-deps', ''
+    use_test_pypi, '--index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple', ''
   )
   reticulate::virtualenv_install(
     envname=envname, packages = packages, ignore_installed = ignore_installed,
