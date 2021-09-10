@@ -1,8 +1,10 @@
 library(Matrix)
 library(reticulate)
 
-python_path <- reticulate::py_discover_config()$python
-bayesbridger::setup_python_env(python_path=python_path)
+python_path <- bayesbridger::guess_anaconda_path()
+bayesbridger::setup_python_env(
+  python_path = python_path, use_existing = TRUE
+)
 bayesbridger::configure_python()
 
 # Simulate sparse binary design matrix and binomial outcome
@@ -27,18 +29,19 @@ n_success <- rbinom(n_obs, n_trial, prob = 1 / (1 + exp(-X_beta)))
 outcome <- list(n_success = n_success, n_trial = n_trial)
 
 # Generate posterior samples via Python 'bayesbridge' package
-bayesbridge <- reticulate::import("bayesbridge")
 model <- bayesbridger::create_model(outcome, X)
 prior <- bayesbridger::create_prior(
   bridge_exponent=.25,
   regularizing_slab_size = 1.
 )
-bb <- bayesbridger::instantiate_bayesbridge(model, prior)
-n_burnin <- 0L
-n_post_burnin <- 1100L
-mcmc_output <- bb$gibbs(n_burnin, n_post_burnin, thin=1, n_status_update = 10)
-mcmc_samples <- mcmc_output$samples
+bridge <- bayesbridger::instantiate_bayesbridge(model, prior)
 
+n_burnin <- 0L
+n_iter <- 1100L
+gibbs_output <- bayesbridger::gibbs(
+  bridge, n_iter, n_burnin=n_burnin, thin=1, n_status_update = 10
+)
+mcmc_samples <- gibbs_output$samples
 
 # Diagnose convergence and discard the non-stationary part.
 plot(mcmc_samples$logp, type = 'l', xlab = 'MCMC iter', ylab = 'Log density')
@@ -61,4 +64,3 @@ plot(post_mean[1:n_coef_to_plot], pch=4, col='blue', ylim = c(y_min, y_max),
 points(lower_quantile[1:n_coef_to_plot], pch=sprintf("\u2013"), col='green')
 points(upper_quantile[1:n_coef_to_plot], pch=sprintf("\u2013"), col='green')
 lines(beta_true[1:n_coef_to_plot], col='red', lty='dashed')
-
