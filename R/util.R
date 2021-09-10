@@ -46,7 +46,8 @@ guess_anaconda_path <- function() {
 #' @export
 setup_python_env <- function(
     envname='bayesbridge', bayesbridge_ver='==0.2.4',
-    python_path=NULL, use_existing=FALSE, ignore_installed=FALSE, use_test_pypi=FALSE
+    python_path=NULL, use_existing=FALSE, ignore_installed=FALSE,
+    use_test_pypi=FALSE, no_binary=FALSE
   ) {
   py_environments <- reticulate::virtualenv_list()
   if (reticulate::virtualenv_exists(envname) && !use_existing) {
@@ -64,6 +65,9 @@ setup_python_env <- function(
   pip_options <- ifelse(
     use_test_pypi, '--index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple', ''
   )
+  if (no_binary) {
+    pip_options <- paste(pip_options, "--no-binary bayesbridge")
+  }
   reticulate::virtualenv_install(
     envname=envname, packages = packages, ignore_installed = ignore_installed,
     pip_options = pip_options
