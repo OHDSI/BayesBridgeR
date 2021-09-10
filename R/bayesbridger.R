@@ -140,3 +140,57 @@ create_prior <- function(
 instantiate_bayesbridge <- function(model, prior) {
   return(bayesbridge$BayesBridge(model, prior))
 }
+
+#' Generate posterior samples under the specified model and prior.
+#'
+#' @param bridge
+#'   BayesBridge object returned by the `instantiate_bayesbridge` function
+#' @param n_iter
+#'   Total number of MCMC iterations i.e. burn-ins + saved posterior draws
+#' @param n_burnin
+#'   Number of burn-in samples to be discarded
+#' @param thin
+#'   Number of iterations per saved samples for "thinning" MCMC to reduce
+#'   the output size. In other words, the function saves an MCMC sample
+#'   every `thin` iterations, returning floor(n_iter / thin) samples.
+#' @param seed
+#'   Seed for random number generator
+#' @param init
+#'   Specifies, partially or completely, the initial state of Markov chain.
+#'   The partial option allows either specifying the global scale or
+#'   regression coefficients. The former is the recommended default option
+#'   since the global scale parameter is easier to choose, representing
+#'   the prior expected magnitude of regression coefficients and . (But
+#'   the latter might make sense if some preliminary estimate of coefficients
+#'   are available.) Other parameters are then initialized through a
+#'   combination of heuristics and conditional optimization.
+#' @param coef_sampler_type
+#'   Specifies the sampling method used to update regression coefficients and to
+#'   be chosen from 'cholesky', 'cg', or 'hmc'. If NULL, the method is chosen via
+#'   a crude heuristic based on the model type, as well as size and sparsity level of
+#'   design matrix. For linear and logistic models with large and sparse design
+#'   matrix, the conjugate gradient sampler ('cg') is preferred over the Cholesky
+#'   decomposition based sampler ('cholesky'). For other models, only Hamiltonian
+#'   Monte Carlo ('hmc') can be used.
+#' @param params_to_save
+#'   Specifies which parameters to save during MCMC iterations. By default, the
+#'   most relevant parameters --- regression coefficients, global scale,
+#'   posterior log-density --- are saved. Use 'all' to save all the parameters
+#'   (but beware of the extra memory requirement), including local scale and,
+#'   depending on the model, precision (inverse variance) of observations.
+#' @param n_status_update
+#'   Number of updates to print on stdout during the sampler run.
+#' @export
+gibbs <- function(
+    bridge, n_iter, n_burnin = 0, thin = 1, seed = NULL,
+    init = list(global_scale = 0.1),
+    params_to_save = c('coef', 'global_scale', 'logp'),
+    coef_sampler_type = NULL, n_status_update = 0
+  ) {
+  gibbs_output <- bridge$gibbs(
+    n_iter, n_burnin = n_burnin, thin = thin, seed = seed, init = init,
+    params_to_save = params_to_save, coef_sampler_type = coef_sampler_type,
+    n_status_update = n_status_update
+  )
+  return(list(samples=gibbs_output[[1]], mcmc_info=gibbs_output[[2]]))
+}
