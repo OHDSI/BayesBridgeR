@@ -180,6 +180,7 @@ instantiate_bayesbridge <- function(model, prior) {
 #'   depending on the model, precision (inverse variance) of observations.
 #' @param n_status_update
 #'   Number of updates to print on stdout during the sampler run.
+#'
 #' @export
 gibbs <- function(
     bridge, n_iter, n_burnin = 0, thin = 1, seed = NULL,
@@ -193,4 +194,35 @@ gibbs <- function(
     n_status_update = n_status_update
   )
   return(list(samples=gibbs_output[[1]], mcmc_info=gibbs_output[[2]]))
+}
+
+#' Resume Gibbs sampler from the last state.
+#'
+#' @param prev_mcmc_info
+#'   MCMC info returned by a previous call to the `gibbs` method.
+#' @param n_add_iter
+#'   Number of additional iterations.
+#' @param n_status_update
+#'   Number of updates to print on stdout during the sampler run.
+#' @param merge
+#'   If True, merge the Gibbs sampler outputs from the previous and
+#'   new runs, so that the return values coincide with one combined run
+#'   of `gibbs` with the `n_burnin` burn-in and `n_iter + n_add_iter`
+#'   post-burnin iterations.
+#' @param prev_samples
+#'   MCMC samples returned by a previous call to the 'gibbs' method.
+#'
+#' @export
+gibbs_resume <- function(
+    bridge, prev_mcmc_info, n_add_iter, n_status_update = 0,
+    merge = FALSE, prev_samples = NULL
+  ) {
+  new_gibbs_output <- bridge$gibbs_additional_iter(
+    prev_mcmc_info, n_add_iter = n_add_iter, n_status_update = n_status_update,
+    merge = merge, prev_samples = prev_samples
+  )
+  return(list(
+    new_samples=new_gibbs_output[[1]],
+    new_mcmc_info=new_gibbs_output[[2]]
+  ))
 }
