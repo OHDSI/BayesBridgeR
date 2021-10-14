@@ -49,7 +49,7 @@ find_anaconda_path <- function() {
 #'
 #' @export
 setup_python_env <- function(
-    envname='bayesbridge', bayesbridge_ver='==0.2.4',
+    envname='bayesbridge', bayesbridge_ver='==0.2.5',
     python_path=NULL, use_existing=FALSE, ignore_installed=FALSE,
     use_test_pypi=FALSE, no_binary=FALSE
   ) {
