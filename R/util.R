@@ -12,7 +12,11 @@ get_os <- function() {
   return(os)
 }
 
-guess_anaconda_path <- function() {
+#' Look for Anaconda in commonly installed locations. Return the path if found
+#' and the searched paths otherwise.
+#'
+#' @export
+find_anaconda_path <- function() {
   # Based on https://docs.anaconda.com/anaconda/user-guide/faq/#installing-anaconda
   # (as retrieved on Aug 2021) and on other resources.
   os <- get_os()
