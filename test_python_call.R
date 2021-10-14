@@ -1,7 +1,7 @@
 library(Matrix)
 library(reticulate)
 
-python_path <- bayesbridger::guess_anaconda_path()
+python_path <- bayesbridger::find_anaconda_path()
 bayesbridger::setup_python_env(
   python_path = python_path, use_existing = TRUE
 )
@@ -41,6 +41,7 @@ n_iter <- 1100L
 gibbs_output <- bayesbridger::gibbs(
   bridge, n_iter, n_burnin=n_burnin, thin=1, n_status_update = 10
 )
+
 mcmc_samples <- gibbs_output$samples
 
 # Diagnose convergence and discard the non-stationary part.
