@@ -217,7 +217,7 @@ gibbs_resume <- function(
     bridge, prev_mcmc_info, n_add_iter, n_status_update = 0,
     merge = FALSE, prev_samples = NULL
   ) {
-  new_gibbs_output <- bridge$gibbs_additional_iter(
+  new_gibbs_output <- bridge$gibbs_resume(
     prev_mcmc_info, n_add_iter = n_add_iter, n_status_update = n_status_update,
     merge = merge, prev_samples = prev_samples
   )
