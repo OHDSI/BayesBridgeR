@@ -186,12 +186,13 @@ gibbs <- function(
     bridge, n_iter, n_burnin = 0, thin = 1, seed = NULL,
     init = list(global_scale = 0.1),
     params_to_save = c('coef', 'global_scale', 'logp'),
-    coef_sampler_type = NULL, n_status_update = 0
+    coef_sampler_type = NULL, n_status_update = 0,
+    params_to_fix = c()
   ) {
   gibbs_output <- bridge$gibbs(
     n_iter, n_burnin = n_burnin, thin = thin, seed = seed, init = init,
     params_to_save = params_to_save, coef_sampler_type = coef_sampler_type,
-    n_status_update = n_status_update
+    n_status_update = n_status_update, params_to_fix = params_to_fix
   )
   return(list(samples=gibbs_output[[1]], mcmc_info=gibbs_output[[2]]))
 }
@@ -217,7 +218,7 @@ gibbs_resume <- function(
     bridge, prev_mcmc_info, n_add_iter, n_status_update = 0,
     merge = FALSE, prev_samples = NULL
   ) {
-  new_gibbs_output <- bridge$gibbs_additional_iter(
+  new_gibbs_output <- bridge$gibbs_resume(
     prev_mcmc_info, n_add_iter = n_add_iter, n_status_update = n_status_update,
     merge = merge, prev_samples = prev_samples
   )
