@@ -187,12 +187,12 @@ gibbs <- function(
     init = list(global_scale = 0.1),
     params_to_save = c('coef', 'global_scale', 'logp'),
     coef_sampler_type = NULL, n_status_update = 0,
-    params_to_fix = c()
+    options = NULL
   ) {
   gibbs_output <- bridge$gibbs(
     n_iter, n_burnin = n_burnin, thin = thin, seed = seed, init = init,
     params_to_save = params_to_save, coef_sampler_type = coef_sampler_type,
-    n_status_update = n_status_update, params_to_fix = params_to_fix
+    n_status_update = n_status_update, options = options
   )
   return(list(samples=gibbs_output[[1]], mcmc_info=gibbs_output[[2]]))
 }
