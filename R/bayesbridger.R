@@ -115,6 +115,7 @@ create_prior <- function(
     regularizing_slab_size = 1,
     n_fixed_effect = 0L,
     sd_for_fixed_effect = Inf,
+    mean_for_fixed_effect = Inf,
     sd_for_intercept = Inf,
     global_scale_prior_hyper_param = NULL
   ) {
@@ -123,6 +124,7 @@ create_prior <- function(
     regularizing_slab_size = regularizing_slab_size,
     n_fixed_effect = as.integer(n_fixed_effect),
     sd_for_fixed_effect = sd_for_fixed_effect,
+    mean_for_fixed_effect = mean_for_fixed_effect,
     sd_for_intercept = sd_for_intercept,
     global_scale_prior_hyper_param = global_scale_prior_hyper_param
   )
