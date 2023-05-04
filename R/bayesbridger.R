@@ -58,7 +58,7 @@ check_logit_outcome_arg <- function(n_success, n_trial=NULL) {
   if (is.null(n_trial)) {
     stopifnot(
       "Number of successes must be binary unless number of trials is specified." =
-      all(n_success == 0 || n_success == 1)
+      (all(n_success %in% c(0,1)))
     )
   } else {
     stopifnot(
@@ -115,6 +115,7 @@ create_prior <- function(
     regularizing_slab_size = 1,
     n_fixed_effect = 0L,
     sd_for_fixed_effect = Inf,
+    mean_for_fixed_effect = Inf,
     sd_for_intercept = Inf,
     global_scale_prior_hyper_param = NULL
   ) {
@@ -123,6 +124,7 @@ create_prior <- function(
     regularizing_slab_size = regularizing_slab_size,
     n_fixed_effect = as.integer(n_fixed_effect),
     sd_for_fixed_effect = sd_for_fixed_effect,
+    mean_for_fixed_effect = mean_for_fixed_effect,
     sd_for_intercept = sd_for_intercept,
     global_scale_prior_hyper_param = global_scale_prior_hyper_param
   )
@@ -180,6 +182,9 @@ instantiate_bayesbridge <- function(model, prior) {
 #'   depending on the model, precision (inverse variance) of observations.
 #' @param n_status_update
 #'   Number of updates to print on stdout during the sampler run.
+#' @param options
+#'   List of additional options for sampling. For fixing global scale sampling,
+#'   'global_scale_update = NULL'.
 #'
 #' @export
 gibbs <- function(
