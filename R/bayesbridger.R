@@ -129,8 +129,8 @@ create_prior <- function(
     sd_for_fixed_effect = sd_for_fixed_effect,
     mean_for_fixed_effect = mean_for_fixed_effect,
     n_mixture = n_mixture,
-    sd_for_mixture = sd_for_mixture,
-    mean_for_mixture = mean_for_mixture,
+    sd_for_mixture = array(sd_for_mixture),
+    mean_for_mixture = array(mean_for_mixture),
     sd_for_intercept = sd_for_intercept,
     global_scale_prior_hyper_param = global_scale_prior_hyper_param
   )
@@ -196,7 +196,7 @@ instantiate_bayesbridge <- function(model, prior) {
 gibbs <- function(
     bridge, n_iter, n_burnin = 0, thin = 1, seed = NULL,
     init = list(global_scale = 0.1),
-    params_to_save = c('coef', 'global_scale', 'logp', 'gamma'),
+    params_to_save = c('coef', 'global_scale', 'logp'),
     coef_sampler_type = NULL, n_status_update = 0,
     options = NULL
   ) {
