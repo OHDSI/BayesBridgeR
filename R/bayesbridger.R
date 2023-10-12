@@ -129,7 +129,7 @@ create_prior <- function(
     n_fixed_effect = as.integer(n_fixed_effect),
     sd_for_fixed_effect = sd_for_fixed_effect,
     mean_for_fixed_effect = mean_for_fixed_effect,
-    n_mixture = n_mixture,
+    n_mixture = as.integer(n_mixture),
     q_for_mixture = q_for_mixture,
     sd_for_mixture = array(sd_for_mixture),
     mean_for_mixture = array(mean_for_mixture),
