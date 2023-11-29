@@ -117,7 +117,6 @@ create_prior <- function(
     sd_for_fixed_effect = Inf,
     mean_for_fixed_effect = Inf,
     sd_for_intercept = Inf,
-    q_for_mixture = 0.5,
     sd_for_mixture = Inf,
     mean_for_mixture = Inf,
     global_scale_prior_hyper_param = NULL
@@ -128,7 +127,6 @@ create_prior <- function(
     n_fixed_effect = as.integer(n_fixed_effect),
     sd_for_fixed_effect = sd_for_fixed_effect,
     mean_for_fixed_effect = mean_for_fixed_effect,
-    q_for_mixture = array(q_for_mixture),
     sd_for_mixture = array(sd_for_mixture),
     mean_for_mixture = array(mean_for_mixture),
     sd_for_intercept = sd_for_intercept,
